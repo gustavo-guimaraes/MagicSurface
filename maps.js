@@ -1,5 +1,8 @@
-var layerPosition = new google.maps.LatLng(-23.192131, -45.790300);
-    //var layerPosition = new google.maps.LatLng(-23.191726, -45.790731);
+var layerPosition = new google.maps.LatLng(-23.198169, -45.895000);
+var userLatitude = -23.198169;
+var userLongitude = -45.893592;
+var userPosition;
+var userImage = 'userIcon.png';
 
     function initialize(){
       var map = new google.maps.Map(document.getElementById('map-canvas'), {
@@ -10,28 +13,41 @@ var layerPosition = new google.maps.LatLng(-23.192131, -45.790300);
       var marker = null;
 
       function autoUpdate() {
+
+        /*  GEOLOCALIZAÇÃO
         navigator.geolocation.getCurrentPosition(function(position) {  
           var newPoint = new google.maps.LatLng(position.coords.latitude, 
                                                 position.coords.longitude);
+        */
+          userPosition = new google.maps.LatLng(userLatitude, userLongitude);
+
 
           if (marker) {
-            marker.setPosition(newPoint);
+            marker.setPosition(userPosition);
           }
           else {
             marker = new google.maps.Marker({
-              position: newPoint,
-              map: map
+              position: userPosition,
+              map: map,
+              icon: userImage
             });
           }
 
-          map.setCenter(newPoint);
+          map.setCenter(userPosition);
 
-          if(calcDistance(newPoint,layerPosition)<20){
+          if(calcDistance(userPosition, layerPosition) < 20){
               $("#myModal").modal();
-            }
-        }); 
+              setTimeout(autoUpdate, 500000000000); // Intervalo de tempo para cada requisição de localização.
+          }
+          else{
+            setTimeout(autoUpdate, 100); // Intervalo de tempo para cada requisição de localização.
+          }
 
-        setTimeout(autoUpdate, 50000); // Intervalo de tempo para cada requisição de localização.
+          userLongitude -= 0.000030;
+
+
+        //}); fim geolocalização
+
       }
 
       autoUpdate();
