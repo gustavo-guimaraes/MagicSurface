@@ -1,2 +1,2 @@
-# mixedRealityInterface
-Trabalho de Graduação MixedRealityInterface - FATEC
+# MagicSurface
+MagicSurface (front-end)
