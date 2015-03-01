@@ -1,32 +1,3 @@
-angular.module('MagicApp',['ui.bootstrap']);
-
-angular.module('MagicApp').controller('ModalCtrl', function ($scope, $modal) {
-
-  $scope.open = function () {
-
-    var modalInstance = $modal.open({
-      templateUrl: 'myModalContent.html',
-      controller: 'ModalInstanceCtrl'
-    });
-  };
-});
-
-angular.module('MagicApp').controller('ModalInstanceCtrl', function ($scope, $modalInstance) {
-
-  $scope.ok = function () {
-    $modalInstance.close();
-  };
-
-  $scope.cancel = function () {
-    $modalInstance.dismiss('cancel');
-  };
-});
-
-
-
-
-
-
 // ---------   MAP  --------------
 
 angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $modal) {
@@ -70,6 +41,8 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
         return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2)).toFixed(2);
     }
 
+    var timer = $interval(autoUpdate,100); //Timer para simular usuário andando no mapa
+
     function autoUpdate() {
         userPosition = new google.maps.LatLng(userLat, userLng);
         $scope.infowindowLayer.setContent(calcDistance(userPosition,layerPosition)+' m');
@@ -77,7 +50,7 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
         $scope.map.setCenter(userPosition);
 
         if(calcDistance(userPosition, layerPosition) < 30){
-            $interval.cancel(timer);
+            $interval.cancel(timer); // stop timer
             $modal.open({
                 templateUrl: 'myModalContent.html',
                 controller: 'ModalInstanceCtrl'
@@ -86,10 +59,4 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
         userLng -= 0.000010;
     }
 
-    var timer = $interval(autoUpdate,100);
-
-    
-
 });
-
-
