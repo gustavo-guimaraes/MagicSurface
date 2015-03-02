@@ -1,4 +1,4 @@
-
+angular.module('mrhttp',[]);
 angular.module('mrhttp').factory('MRHttp', function($http, $templateCache){
    return {
        get : function(url, params){
@@ -8,16 +8,6 @@ angular.module('mrhttp').factory('MRHttp', function($http, $templateCache){
                method: 'GET',
                url: url,
                params: params
-           };
-           return $http(req);
-       } ,
-
-        jsonp : function(url){
-           
-           var req = {
-               method: 'JSONP',
-               url: url,
-               cache: templateCache
            };
            return $http(req);
        } ,
