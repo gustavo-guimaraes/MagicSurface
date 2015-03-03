@@ -14,22 +14,39 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
     }
     $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    $scope.marker = new google.maps.Marker({
+    var marker = new google.maps.Marker({
               position: userPosition,
               map: $scope.map,
             });
 
     var layers;
-
+    $scope.imgs;
     var options = {options:angular.toJson({include_layers:'ALL'})};
     MRHttp.get('http://magicsurfacebr.appspot.com/layer/list',options)
     .success(function(result){
         layers = result.layers;
         criarLayers();
+        getImages(layers[0]);
     })
     .error(function(result){
 
     });
+
+    var getImages = function(layer){
+        var params = {
+            id: layer.id,
+            options: angular.toJson({include_images:'ALL'})
+        };
+
+        MRHttp.get('http://magicsurfacebr.appspot.com/layer/get', params)
+        .success(function(result){
+            $scope.imgs = result.images;
+        })
+        .error(function(result){
+        });        
+    }
+    
+
 
     var layerOptions = {
             strokeColor: '#FF0000',
@@ -45,7 +62,7 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
         for(var i=0;i<layers.length;++i){
             layers[i]
             layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
-            layerOptions.radius = layers[i].raio;
+            layerOptions.radius = layers[i].radius;
             var circle = new google.maps.Circle(layerOptions);
 
 
