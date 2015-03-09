@@ -1,9 +1,13 @@
 // ---------   MAP  --------------
 
-angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $modal) {
+angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $modal, MRHttp) {
 
-    var userLat = -23.198300;
-    var userLng = -45.894200;
+    //var userLat = -23.199385; // Santos Dumont Lat
+    //var userLng = -45.891001; // Santos Dumont Lng
+    //var userLat = -23.198069; // Vicentina Aranha 2 Lat
+    //var userLng = -45.896236; // Vicentina Aranha 2 Lng
+    var userLat = -23.198300; // Vicentina Aranha Lat
+    var userLng = -45.894200; // Vicentina Aranha Lng
     var userPosition = new google.maps.LatLng(userLat, userLng);
     var layerPosition = new google.maps.LatLng(-23.198169, -45.895000);
 
@@ -12,12 +16,40 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
         disableDefaultUI: true,
         zoom: 18
     }
-    $scope.map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
-    $scope.marker = new google.maps.Marker({
+    var marker = new google.maps.Marker({
               position: userPosition,
-              map: $scope.map,
+              map: map
             });
+
+    var layers;
+    var options = {options:angular.toJson({include_layers:'ALL'})};
+    MRHttp.get('http://magicsurfacebr.appspot.com/layer/list',options)
+    .success(function(result){
+        layers = result.layers;
+        criarLayers();
+    })
+    .error(function(result){
+
+    });
+
+    $scope.imgs;
+    var getImages = function(layer){
+        var params = {
+            id: layer.id,
+            options: angular.toJson({include_images:'ALL'})
+        };
+
+        MRHttp.get('http://magicsurfacebr.appspot.com/layer/get', params)
+        .success(function(result){
+            $scope.imgs = result.images;
+        })
+        .error(function(result){
+        });        
+    }
+    
+
 
     var layerOptions = {
             strokeColor: '#FF0000',
@@ -25,17 +57,27 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
             strokeWeight: 2,
             fillColor: '#FF0000',
             fillOpacity: 0.35,
-            map: $scope.map,
+            map: map,
             center: layerPosition,
             radius: 30
-            };       
-    $scope.layerCircle = new google.maps.Circle(layerOptions);
+            }; 
+    var criarLayers = function(){
+        for(var i=0; i<layers.length; ++i){
+            layers[i]
+            layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
+            layerOptions.radius = layers[i].radius;
+            var circle = new google.maps.Circle(layerOptions);
 
-    $scope.infowindowLayer = new google.maps.InfoWindow({
-        map: $scope.map,
-        position: layerPosition,
-        content: calcDistance(userPosition,layerPosition)+' m'
-    });
+
+            var infowindowLayer = new google.maps.InfoWindow({
+            map: map,
+            position: new google.maps.LatLng(layers[i].latitude,layers[i].longitude),
+            content: layers[i].name
+            });
+
+
+        }     
+    }
 
     function calcDistance(p1, p2){
         return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2)).toFixed(2);
@@ -45,16 +87,22 @@ angular.module('MagicApp').controller('MapCtrl', function ($scope, $interval, $m
 
     function autoUpdate() {
         userPosition = new google.maps.LatLng(userLat, userLng);
-        $scope.infowindowLayer.setContent(calcDistance(userPosition,layerPosition)+' m');
-        $scope.marker.setPosition(userPosition);
-        $scope.map.setCenter(userPosition);
+        marker.setPosition(userPosition);
+        map.setCenter(userPosition);
 
-        if(calcDistance(userPosition, layerPosition) < 30){
-            $interval.cancel(timer); // stop timer
-            $modal.open({
-                templateUrl: 'myModalContent.html',
-                controller: 'ModalInstanceCtrl'
-            });
+        for(var i=0; i<layers.length; ++i){
+            layerPosition = new google.maps.LatLng(layers[i].latitude, layers[i].longitude);
+            if(calcDistance(userPosition, layerPosition) < layers[i].radius){
+                $interval.cancel(timer); // stop timer
+                getImages(layers[i]);
+                $scope.descricao = " Layer: "+layers[i].name;
+                /*
+                $modal.open({
+                    templateUrl: 'myModalContent.html',
+                    controller: 'ModalInstanceCtrl'
+                });
+                */
+            }
         }
         userLng -= 0.000010;
     }

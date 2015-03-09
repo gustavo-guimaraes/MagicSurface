@@ -14,8 +14,8 @@
     <script type="text/javascript" src="static/js/lib/jquery.min.js"></script>
     <script type="text/javascript" src="static/js/lib/bootstrap.min.js"></script>
     <script type="text/javascript" src="static/js/lib/angular.min.js"></script>
-    <script type="text/javascript" src="static/js/lib/angular.js"></script>
     <script type="text/javascript" src="static/js/lib/ui-bootstrap-tpls.js"></script>
+    <script type="text/javascript" src="static/js/services/mrhttp.js"></script>
     <script type="text/javascript" src="static/js/controllers/home.js"></script>
     <script type="text/javascript" src="static/js/controllers/maps.js"></script>
 
@@ -36,15 +36,6 @@
           <a class="navbar-brand" href="#">Magic Surface</a>
         </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-          <ul class="nav navbar-nav">
-            <li><a href="#">LOCALIZAR<span class="sr-only">(current)</span></a></li>
-            <li><a href="#">CRIAR</a></li>
-          </ul>
-          <form class="navbar-form navbar-left">
-            <div class="form-group">
-              <button class="btn btn-success" ng-controller="ModalCtrl" ng-click="open()">Simular layer encontrado</button>
-            </div>
-          </form>
         </div>
       </div>
     </div>
@@ -56,7 +47,9 @@
             <h3 class="modal-title">Layer encontrado!</h3>
         </div>
         <div class="modal-body">
-            Conteúdo
+            <div style="margin: 10px" ng-repeat="i in imgs">
+              <img ng-src="{{i.link}}" style="max-height: 200px; max-width: 200px"/>
+            </div>
         </div>
         <div class="modal-footer">
             <button class="btn btn-primary" ng-click="ok()">OK</button>
@@ -65,13 +58,14 @@
       </script>
     </div>
 
-
     <!-- Mapa -->
     <div ng-controller="MapCtrl">
         <div id="map"></div>
+        <div>{{ descricao }}</div>
+        <div style="margin: 10px" ng-repeat="i in imgs">
+            <img ng-src="{{i.link}}" style="max-height: 200px; max-width: 200px"/>
+        </div>
     </div>
-
-
 
   </body>
 </html>
