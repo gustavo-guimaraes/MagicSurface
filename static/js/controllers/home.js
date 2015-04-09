@@ -1,4 +1,4 @@
-angular.module('MagicApp',['ui.bootstrap','mrhttp']);
+angular.module('MagicApp',['ui.bootstrap','mrhttp','webcam']);
 
 angular.module('MagicApp').controller('ModalCtrl', function ($scope, $modal) {
 
@@ -18,4 +18,9 @@ angular.module('MagicApp').controller('ModalInstanceCtrl', function ($scope, $mo
   };
 });
 
-
+angular.module('MagicApp').controller("CameraCtrl", function ($scope) {
+	$scope.cameraVisible = false;
+	$scope.mostrarCamera = function() {
+		$scope.cameraVisible = true;
+	}
+});
