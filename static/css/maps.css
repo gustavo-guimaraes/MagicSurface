@@ -1,6 +1,5 @@
 #map {
-    height:400px;
-
+    min-height:380px;
 }
 .infoWindowContent {
     font-size:  14px !important;
