@@ -1,14 +1,9 @@
 #map {
-<<<<<<< HEAD
-    min-height:380px;
-}
-=======
     min-height:410px;
 }
 
 
 
->>>>>>> origin/master
 .infoWindowContent {
     font-size:  14px !important;
     border-top: 1px solid #ccc;

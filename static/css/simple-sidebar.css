@@ -6,8 +6,16 @@
 
 /* Toggle Styles */
 
+<<<<<<< HEAD
 #wrapper {
     padding-left: 0;
+=======
+body {
+    background-color: #eeeeee;
+}
+
+#wrapper {
+>>>>>>> origin/master
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -26,8 +34,14 @@
     height: 100%;
     margin-left: -250px;
     overflow-y: auto;
+<<<<<<< HEAD
     background: #E0E0E0;
     margin-top: 50px;
+=======
+    background: transparent;
+    margin-top: 50px;
+    box-shadow: 0px 1px 3px #ABA8A8;
+>>>>>>> origin/master
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -40,8 +54,15 @@
 
 #page-content-wrapper {
     width: 100%;
+<<<<<<< HEAD
     position: absolute;
     padding: 15px;
+=======
+    height: 100%;
+    position: absolute;
+    padding-top: 50px;
+    padding-bottom: 50px;
+>>>>>>> origin/master
 }
 
 #wrapper.toggled #page-content-wrapper {
@@ -62,6 +83,7 @@
 
 .sidebar-nav li {
     text-indent: 20px;
+<<<<<<< HEAD
     line-height: 40px;
 }
 
@@ -69,6 +91,17 @@
     display: block;
     text-decoration: none;
     color: #007aff;
+=======
+    line-height: 50px;
+    font-size: 16px;
+}
+
+.sidebar-nav li a {
+    border-bottom: 1px solid #ffffff;
+    display: block;
+    text-decoration: none;
+    color: #323B4F;
+>>>>>>> origin/master
 }
 
 .sidebar-nav li a:hover {
@@ -116,7 +149,10 @@
     }
 
     #page-content-wrapper {
+<<<<<<< HEAD
         padding: 20px;
+=======
+>>>>>>> origin/master
         position: relative;
     }
 
@@ -126,6 +162,46 @@
     }
 }
 
+<<<<<<< HEAD
 .container-fluid {
     padding: 50px 0px;
+=======
+.form {
+    margin: 15px 15px;
+    text-align: left;
+}
+
+.title {
+    width: 100%;
+    height: 40px;
+    padding-top: 10px;
+    background-color: #ABA8A8;
+    color: #ffffff;
+    font-size: 16px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.btnPhoto {
+    font-size: 26px;
+}
+
+#slides_control > div{
+  height: 200px;
+}
+img{
+  margin:auto;
+  width: 400px;
+}
+#slides_control {
+  position:absolute;
+  width: 400px;
+  left:50%;
+  top:20px;
+ margin-left:-200px;
+}
+
+.destaque { 
+    font-weight: bold;
+>>>>>>> origin/master
 }
