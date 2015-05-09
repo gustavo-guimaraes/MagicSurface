@@ -1,14 +1,5 @@
 // ---------   MAP  --------------
 
-<<<<<<< HEAD
-angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, $modal, MRHttp) {
-
-    $scope.mapaVisible = true;
-    $scope.cameraVisible = false;
-    $scope.alternarMapaCamera = function() {
-        $scope.mapaVisible = !$scope.mapaVisible;
-        $scope.cameraVisible = !$scope.cameraVisible;
-=======
 angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, MRHttp) {
 
     $scope.mapaVisible = true;
@@ -57,19 +48,10 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
         $scope.cameraVisible = true;
         $scope.btnSair = false;
         $scope.btnFoto = true;
->>>>>>> origin/master
     }
 
     //var userLat = -23.199385; // Santos Dumont Lat
     //var userLng = -45.891001; // Santos Dumont Lng
-<<<<<<< HEAD
-    var userLat = -23.198069; // Vicentina Aranha 2 Lat
-    var userLng = -45.896236; // Vicentina Aranha 2 Lng
-    //var userLat = -23.198300; // Vicentina Aranha Lat
-    //var userLng = -45.894200; // Vicentina Aranha Lng
-    var userPosition = new google.maps.LatLng(userLat, userLng);
-    var layerPosition = new google.maps.LatLng(-23.198169, -45.895000);
-=======
     //var userLat = -23.198069; // Vicentina Aranha 2 Lat
     //var userLng = -45.896236; // Vicentina Aranha 2 Lng
     //var userLat = -23.198300; // Vicentina Aranha Lat
@@ -77,16 +59,11 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
     //var userLat = -23.160903; // FATEC
     //var userLng = -45.795815; // FATEC
     var userPosition = null;
->>>>>>> origin/master
 
     var mapOptions = {
         center: userPosition,
         disableDefaultUI: true,
-<<<<<<< HEAD
-        zoom: 17
-=======
         zoom: 18
->>>>>>> origin/master
     }
     var map = new google.maps.Map(document.getElementById('map'), mapOptions);
 
@@ -103,11 +80,7 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
         criarLayers();
     })
     .error(function(result){
-<<<<<<< HEAD
-
-=======
         console.log('Erro ao buscar Layers');
->>>>>>> origin/master
     });
 
     $scope.imgs;
@@ -122,26 +95,6 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
             $scope.imgs = result.images;
         })
         .error(function(result){
-<<<<<<< HEAD
-        });        
-    }
-    
-
-
-    var layerOptions = {
-            strokeColor: '#FF0000',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#FF0000',
-            fillOpacity: 0.35,
-            map: map,
-            center: layerPosition,
-            radius: 30
-            }; 
-    var criarLayers = function(){
-        for(var i=0; i<layers.length; ++i){
-            layers[i]
-=======
             console.log('Erro ao buscar imagens');
         });        
     }
@@ -159,28 +112,16 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
 
     criarLayers = function(){
         for(var i=0; i<layers.length; ++i){
->>>>>>> origin/master
             layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
             layerOptions.radius = layers[i].radius;
             var circle = new google.maps.Circle(layerOptions);
 
-<<<<<<< HEAD
-
-            var infowindowLayer = new google.maps.InfoWindow({
-            map: map,
-            position: new google.maps.LatLng(layers[i].latitude,layers[i].longitude),
-            content: layers[i].name
-            });
-
-
-=======
             var infowindowLayer = new google.maps.InfoWindow({
                 map: map,
                 position: layerOptions.center,
                 content: layers[i].name
             });
             console.log('Criando layers');
->>>>>>> origin/master
         }     
     }
 
@@ -188,41 +129,6 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
         return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2)).toFixed(2);
     }
 
-<<<<<<< HEAD
-    //var timer = $interval(autoUpdate,100); //Timer para simular usuário andando no mapa
-
-    function autoUpdate() {
-        userPosition = new google.maps.LatLng(userLat, userLng);
-        marker.setPosition(userPosition);
-        map.setCenter(userPosition);
-
-        for(var i=0; i<layers.length; ++i){
-            layerPosition = new google.maps.LatLng(layers[i].latitude, layers[i].longitude);
-            if(calcDistance(userPosition, layerPosition) < layers[i].radius){
-                $interval.cancel(timer); // stop timer
-                getImages(layers[i]);
-                $scope.descricao = " Layer: "+layers[i].name;
-                $scope.escondeMapa = false;
-                /*
-                $modal.open({
-                    templateUrl: 'myModalContent.html',
-                    controller: 'ModalInstanceCtrl'
-                });
-                */
-            }
-        }
-        userLng -= 0.000010;
-    }
-
-
-
-$scope.myChannel = {
-    // the fields below are all optional
-    videoHeight: 380,
-    videoWidth: 290,
-    video: null // Will reference the video element on success
-  };
-=======
      var timer = $interval(autoUpdate,1000);
 
     function autoUpdate() {
@@ -275,7 +181,6 @@ $scope.myChannel = {
             $scope.mensagem = "Erro ao enviar formulário.";
         });  
     }
->>>>>>> origin/master
 
 
 });
