@@ -2479,7 +2479,7 @@ img {
 }
 
 svg:not(:root) {
-  overflow: hidden;
+  
 }
 
 figure {
@@ -2702,7 +2702,7 @@ hr {
   height: 1px;
   margin: -1px;
   padding: 0;
-  overflow: hidden;
+  
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
@@ -3136,15 +3136,12 @@ pre code {
 }
 
 .container-fluid {
-  margin-right: auto;
-  margin-left: auto;
-  padding-left: 15px;
-  padding-right: 15px;
+  
 }
 
 .row {
-  margin-left: -15px;
-  margin-right: -15px;
+  margin-left: 0px;
+  margin-right: 0px;
 }
 
 .col-xs-1,
@@ -3776,7 +3773,7 @@ input[type="search"] {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 10px;
 }
 
 .radio,
@@ -4477,6 +4474,10 @@ fieldset[disabled] .btn-link:focus {
   width: 100%;
 }
 
+.fixed-bottom {
+    bottom: 0;
+}
+
 .btn-block + .btn-block {
   margin-top: 5px;
 }
@@ -4519,7 +4520,7 @@ tbody.collapse.in {
 .collapsing {
   position: relative;
   height: 0;
-  overflow: hidden;
+  
   -webkit-transition-property: height, visibility;
   transition-property: height, visibility;
   -webkit-transition-duration: 0.35s;
@@ -4577,7 +4578,7 @@ tbody.collapse.in {
 .dropdown-menu .divider {
   height: 1px;
   margin: 9px 0;
-  overflow: hidden;
+  
   background-color: #e5e5e5;
 }
 
@@ -5097,7 +5098,7 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .nav .nav-divider {
   height: 1px;
   margin: 9px 0;
-  overflow: hidden;
+  
   background-color: #e5e5e5;
 }
 
@@ -5237,8 +5238,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar {
   position: relative;
   height: 50px;
-  margin-bottom: 20px;
-  border: 1px solid transparent;
 }
 
 .navbar-collapse {
@@ -5288,7 +5287,6 @@ select[multiple].input-group-sm > .input-group-btn > .btn {
 .navbar-fixed-bottom {
   bottom: 0;
   margin-bottom: 0;
-  border-width: 1px 0 0;
 }
 
 .navbar-brand {
@@ -5953,7 +5951,7 @@ a.thumbnail.active {
 }
 
 .progress {
-  overflow: hidden;
+  
   height: 20px;
   margin-bottom: 20px;
   background-color: #f5f5f5;
@@ -6721,12 +6719,12 @@ button.close {
 }
 
 .modal-open {
-  overflow: hidden;
+  
 }
 
 .modal {
   display: none;
-  overflow: hidden;
+  
   position: fixed;
   top: 0;
   right: 0;
@@ -7108,7 +7106,7 @@ button.close {
 
 .carousel-inner {
   position: relative;
-  overflow: hidden;
+  
   width: 100%;
 }
 
@@ -7492,13 +7490,13 @@ ng-view.app-content,
 html {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  
 }
 
 body {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  
   font-weight: 200;
 }
 
@@ -7551,13 +7549,13 @@ img {
 html {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  
 }
 
 body {
   height: 100%;
   width: 100%;
-  overflow: hidden;
+  
 }
 
 textarea,
@@ -7672,7 +7670,7 @@ a.list-group-item .icon.pull-right {
   z-index: 2;
   width: 100%;
   background: #ffffff;
-  overflow: hidden;
+  
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   -webkit-transition: -webkit-transform 400ms ease;
@@ -7687,7 +7685,7 @@ a.list-group-item .icon.pull-right {
   display: block;
   height: 100%;
   padding: 0;
-  overflow: hidden;
+  
 }
 
 .app-content {
@@ -7696,7 +7694,7 @@ a.list-group-item .icon.pull-right {
   height: 100%;
   width: 100%;
   padding: 0;
-  overflow: hidden;
+  
 }
 
 .app-search {
@@ -7708,11 +7706,8 @@ a.list-group-item .icon.pull-right {
 
 .navbar-app {
   height: 50px;
-  border-color: #cccccc;
-  background: #f7f7f7;
-  border-width: 1px;
-  border-style: solid;
-  color: #007aff;
+  background: #eeeeee;
+  color: #007aff;;
 }
 
 .navbar-app .btn-icon-only .fa,
@@ -7737,7 +7732,7 @@ a.list-group-item .icon.pull-right {
   text-align: center;
   width: 100%;
   white-space: nowrap;
-  overflow: hidden;
+  
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
 }
@@ -7746,7 +7741,6 @@ a.list-group-item .icon.pull-right {
 .navbar-absolute-bottom {
   position: fixed;
   z-index: 1000;
-  border-width: 0;
   left: 0;
   right: 0;
   width: 100%;
@@ -7764,14 +7758,14 @@ a.list-group-item .icon.pull-right {
 
 .navbar-absolute-top {
   top: 0;
-  border-bottom-width: 1px;
+  box-shadow: 0px 1px 3px #ABA8A8;
+  font-weight: bold;
 }
 
 .navbar-absolute-bottom {
   top: auto;
   bottom: 0;
-  border-bottom: 0 none;
-  border-top-width: 1px;
+  box-shadow: 0px -1px 3px #ABA8A8;
 }
 
 .sidebar {

@@ -35,13 +35,13 @@
         <div id="sidebar-wrapper">
             <ul class="sidebar-nav">
                 <li>
-                    <a href="#">CONFIGURAÇÕES</a>
+                    <a href="#">Configurações</a>
                 </li>
                 <li>
-                    <a href="#">SOBRE</a>
+                    <a href="#">Sobre</a>
                 </li>
                 <li>
-                    <a href="#">CONTATO</a>
+                    <a href="#">Contato</a>
                 </li>
             </ul>
         </div>
@@ -60,37 +60,83 @@
 
         <!-- Page Content -->
         <div id="page-content-wrapper">
-            <div class="container-fluid">
-                <div class="row">
+            <div class="row">
+
+                <div ng-show="mapaVisible">
+                    <div id="map"></div>
+                </div>
+
+                <div ng-show="conteudoLayer">
+                    <div class="title">{{ descricao }}</div>
                     <div class="col-lg-12">
 
-                        <div ng-show="mapaVisible">
-                            <div id="map"></div>
-                            <div>{{ descricao }}</div>
-                            <div style="margin: 10px" ng-repeat="i in imgs">
-                                <img ng-src="{{i.link}}" style="max-height: 300px; max-width: 300px"/>
-                            </div>
+                        <div class="form-group has-success has-feedback">
+                          <button class="btn btn-primary btn-block" ng-click="abrirCamera()">Adicionar Foto...</button>
                         </div>
 
-                        <webcam channel="myChannel" ng-show="cameraVisible"></webcam>
+                        <div>
+                          <carousel interval="myInterval">
+                            <slide ng-repeat="i in imgs" active="i.active">
+                              <img ng-src="{{i.link}}">
+                            </slide>
+                          </carousel>
+                        </div>
 
                     </div>
+
                 </div>
+
+                <div ng-show="formVisible">
+                    <div class="title">Novo Layer</div>
+                    <div class="form col-lg-12">
+                        <div>
+                            {{mensagem}}
+                        </div>
+                        <div class="form-group has-success has-feedback">
+                            <input type="text" ng-model="form.name" class="form-control ng-pristine ng-valid" placeholder="Nome. ex.: Parque">
+                        </div>
+                        <div class="form-group has-success has-feedback">
+                            <input type="number" ng-model="form.radius" class="form-control ng-pristine ng-valid" placeholder="Raio. ex.: 20">
+                        </div>
+                        <div class="form-group">
+                            <p> Latitude: {{latitude}} </p>
+                            <p> Longitude: {{longitude}} </p>
+                        </div>
+                        <div class="form-group">
+                          <button type="submit" ng-click="submitLayer()" class="btn btn-primary btn-block">Criar</button>
+                        </div>
+                    </div> 
+                </div>
+
+                <webcam channel="myChannel" ng-show="cameraVisible"></webcam>
+
             </div>   
         </div>
         <!-- /#page-content-wrapper -->
 
-        <!-- navbar-bottom -->
-        <div class="navbar navbar-app navbar-absolute-bottom">
-            <div class="btn-group justified">
-                <a href="" class="btn btn-navbar"><i class="fa fa-search fa-navbar"></i> BUSCAR</a>
-                <a href="" class="btn btn-navbar" ng-click="alternarMapaCamera()"><i class="fa fa-circle-o fa-navbar"></i> CRIAR</a>
-            </div>
-        </div>
-        <!-- /#navbar-bottom -->
+        
 
     </div>
     <!-- /#wrapper -->
+
+    <!-- navbar-bottom -->
+    <div class="navbar navbar-app navbar-absolute-bottom">
+        <div class="btn-group justified">
+
+            <a href="" class="btn btn-navbar" ng-show="btnCriar" ng-click="mostrarForm()"><i class="fa fa-dot-circle-o fa-navbar"></i> CRIAR</a>
+
+            <a href="" class="btn btn-navbar" ng-show="btnCancelar" ng-click="mostrarMapa()"><i class="fa fa-close fa-navbar"></i> CANCELAR</a>
+
+            <a href="" class="btn btn-navbar destaque" ng-show="btnAbrir" ng-click="mostrarLayer()"><i class="fa fa-image fa-navbar"></i> {{ descricao }}</a>
+            
+
+            <a href="" class="btn btn-navbar" ng-show="btnSair" ng-click="sairLayer()"><i class="fa fa-reply fa-navbar"></i> SAIR</a>
+
+            <a href="" class="btn btn-navbar btnPhoto" ng-show="btnFoto" ng-click="tirarFoto()"><i class="fa fa-camera fa-navbar"></i></a>
+
+        </div>
+    </div>
+    <!-- /#navbar-bottom -->
 
 
     <!-- Menu Toggle Script -->
