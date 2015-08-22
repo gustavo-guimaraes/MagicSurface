@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Magic Surface</title>
+</head>
+<body>
+
+	<canvas id="myCanvas" width="1100" height="1455" style="border:1px solid #d3d3d3; position:absolute; z-index:10;">
+		Your browser does not support the HTML5 canvas tag.
+	</canvas>
+
+	<div style="position:absolute">
+        <video id="sourcevid" autoplay height="1460">
+            Sorry, you're browser doesn't support video. Please try 
+        </video>
+	</div>
+
+	<script type="text/javascript">
+
+		window.onload = function() {
+			var k = 0;
+		    var c=document.getElementById("myCanvas");
+		    var ctx=c.getContext("2d");
+		    var img = new Image();
+		    img.src = "IronMan.png";
+	    	img.onload = function () {
+			    ctx.drawImage(img, 0, 0);
+			    window.addEventListener('deviceorientation', function(event) {
+			    	var alpha = event.alpha;
+			    	var beta = event.beta;
+			    	var gamma = event.gamma;
+			    	var x = alpha * 40;
+			    	var y = beta * 30;
+			    	var z = gamma * 30;
+			    	ctx.clearRect(0, 0, 1100, 1455);
+				    ctx.drawImage(img, z, y);
+		  		});
+			}
+		}; 
+
+		if (typeof MediaStreamTrack === 'undefined' || typeof MediaStreamTrack.getSources === 'undefined') {
+		  	alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+		} else {
+		  	MediaStreamTrack.getSources(gotSources);
+		}
+
+		var constraints = {};
+
+		function gotSources(sourceInfos) {
+		  	for (var i = 0; i !== sourceInfos.length; ++i) {
+			    var sourceInfo = sourceInfos[i];
+			    var option = document.createElement('option');
+			    option.value = sourceInfo.id;
+		    	if (sourceInfo.kind === 'video') {
+		    		sourceInfo = sourceInfos[i+1];
+			        constraints.video = {
+			        	optional: [{ sourceId: sourceInfo.id.toString() }]
+			        };
+
+			        navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia;
+					if (navigator.getUserMedia) {
+					   	navigator.getUserMedia(constraints, 
+					   		function(stream) {
+						        var video = document.getElementById('sourcevid');
+						        video.src = window.URL.createObjectURL(stream);
+						        video.onloadedmetadata = function(e) {
+						           	video.play();
+						        };
+					    	}, 
+					  		function(err) {
+					         	alert("The following error occured: " + err.name);
+					    	}
+					    );
+					} else {
+					   	alert("getUserMedia not supported");
+					}
+
+					video = document.getElementById('sourcevid');
+		    	}
+		    }
+		 }
+
+		//567affb574f4755aacedd4d708e2ee7c7c86496e2f583e8e41b0e4f79653e0ce
+        //359727d73a309398e056f0eff56cee9a603e71831b0405e0c3b70db8ddd87371
+
+	</script>
+
+</body>
+</html>

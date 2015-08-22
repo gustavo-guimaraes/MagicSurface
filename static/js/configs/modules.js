@@ -1,2 +1,1 @@
-angular.module('mrhttp', []);
-angular.module('magic',['mrhttp']);
+angular.module('MagicApp',['ui.bootstrap','magicSurface']);
