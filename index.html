@@ -60,6 +60,7 @@
         <div id="page-content-wrapper">
             <div class="row">
 
+
                 <div ng-show="mapaVisible">
                     <div id="map"></div>
                 </div>
@@ -68,6 +69,7 @@
                     <div class="title">{{ descricao }}</div>
                     <div class="col-lg-12">
 
+                    <div ng-hide="ajaxload">
                         <div class="form-group has-success has-feedback">
                             <input type="file" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
                         </div>
@@ -106,6 +108,10 @@
                     </div> 
                 </div>
 
+                <div ng-show="ajaxload" class="ajaxload">
+                    <img src="static/img/ring.gif" style="height:100px; width:100px;">
+                </div>
+
             </div>   
         </div>
         <!-- /#page-content-wrapper --> 
@@ -120,7 +126,7 @@
 
             <a href="" class="btn btn-navbar" ng-show="btnCancelar" ng-click="mostrarMapa()"><i class="fa fa-close fa-navbar"></i> CANCELAR</a>
 
-            <a href="" class="btn btn-navbar destaque" ng-show="btnAbrir" ng-click="mostrarLayer()"><i class="fa fa-image fa-navbar"></i> {{ descricao }}</a>
+            <a href="" class="btn btn-navbar destaque" ng-hide="btnSair" ng-click="mostrarLayer()"><i class="fa fa-image fa-navbar"></i> {{ descricao }}</a>
             
 
             <a href="" class="btn btn-navbar" ng-show="btnSair" ng-click="sairLayer()"><i class="fa fa-reply fa-navbar"></i> SAIR</a>

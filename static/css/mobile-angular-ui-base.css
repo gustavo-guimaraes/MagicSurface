@@ -8103,3 +8103,7 @@ ui-switch {
 .dropdown-menu {
   display: block;
 }
+
+.ajaxload {
+  text-align: center;
+}

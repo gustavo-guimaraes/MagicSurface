@@ -1,6 +1,6 @@
 // ---------   MAP  --------------
 
-angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, MagicSurface, LayerApi, FileApi) {
+angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, MagicSurface, LayerApi, FileApi) {
 
     var token = 'NsKvPTgcub0FFi4hHMUhAK0oPwB4U3';
     var username = 'gustavo';
@@ -14,6 +14,7 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
     $scope.mapaVisible = true;
     $scope.conteudoLayer = false;
     $scope.formVisible = false;
+    $scope.ajaxload = false;
 
     $scope.btnCriar = true;
     $scope.btnCancelar = false;
@@ -37,10 +38,12 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
     }
 
     $scope.mostrarLayer = function() {
+        getImages($scope.selected_layer);
         $scope.mapaVisible = false;
         $scope.conteudoLayer = true;
         $scope.btnAbrir = false;
         $scope.btnSair = true;
+        
     }
 
     $scope.sairLayer = function() {
@@ -99,7 +102,7 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
         };
         var promise = FileApi.list(params);
         promise.success(function(result){
-            $scope.imgs = result.images;
+            $scope.imgs = result.files;
         });
         promise.error(function(result){
             alert("Erro ao buscar imagens")
@@ -137,6 +140,8 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
 
     var timer = $interval(autoUpdate,1000);
 
+    var inLayer = 0;
+
     function autoUpdate() {
         
         navigator.geolocation.getCurrentPosition(
@@ -148,16 +153,23 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
             userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             marker.setPosition(userPosition);
             map.setCenter(userPosition);
+            //console.log(userPosition);
 
             for(var i=0; i<layers.length; ++i){
                 layerPosition = new google.maps.LatLng(layers[i].latitude, layers[i].longitude);
-                if(calcDistance(userPosition, layerPosition) < layers[i].radius){
-                    $interval.cancel(timer); // stop timer
-                    getImages(layers[i]);
-                    $scope.descricao = layers[i].name;
-                    $scope.selected_layer = layers[i];
-                    $scope.btnAbrir = true;
-                    $scope.btnCriar = false;            
+                if(calcDistance(userPosition, layerPosition) < layers[i].radius) {
+                    if(inLayer == 0) {
+                        //$interval.cancel(timer); // stop timer
+                        //getImages(layers[i]);
+                        $scope.descricao = layers[i].name;
+                        $scope.selected_layer = layers[i];
+                        $scope.btnAbrir = true;
+                        $scope.btnCriar = false; 
+                        inLayer = 1;  
+                    }       
+                }
+                else {
+                    inLayer = 0;
                 }
             }
         }
@@ -190,12 +202,17 @@ angular.module('MagicApp').controller('MainCtrl', function ($scope, $interval, M
     $scope.submitFile = function(files){
         var _file = files[0];
         var promise = FileApi.save(_file, $scope.selected_layer.id);
+        $scope.ajaxload = true;
         promise.success(function(result){
+            $scope.ajaxload = false;
             console.log(result);
             console.log("Foi");
             $scope.image = result;
+            $scope.imgs.push($scope.image);
+            //console.log($scope.image);
         });
         promise.error(function(result){
+            $scope.ajaxload = false;
             console.log(result);
         });
     };
