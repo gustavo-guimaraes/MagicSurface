@@ -33,24 +33,22 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     $scope.mostrarMapa = function() {
         $scope.mapaVisible = true;
         $scope.formVisible = false;
+        $scope.conteudoLayer = false;
         $scope.btnCriar = true;
         $scope.btnCancelar = false;
+        $scope.btnSair = false;
+        criarLayers();
     }
 
     $scope.mostrarLayer = function() {
         getImages($scope.selected_layer);
+        $scope.formVisible = false;
         $scope.mapaVisible = false;
         $scope.conteudoLayer = true;
         $scope.btnAbrir = false;
+        $scope.btnCancelar = false;
         $scope.btnSair = true;
         
-    }
-
-    $scope.sairLayer = function() {
-        $scope.btnSair = false;
-        $scope.btnAbrir = true;
-        $scope.conteudoLayer = false;
-        $scope.mapaVisible = true;
     }
 
     //var userLat = -23.199385; // Santos Dumont Lat
@@ -120,7 +118,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
             radius: null
             }; 
 
-    criarLayers = function(){
+    var criarLayers = function(){
         for(var i=0; i<layers.length; ++i){
             layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
             layerOptions.radius = layers[i].radius;
@@ -188,9 +186,9 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.form["longitude"] = userPosition.K;
         var promise = LayerApi.save($scope.form);
         promise.success(function(result){
-            $scope.mostrarMapa();
-            criarLayers();
-            alert("Layer criado com sucesso!");
+            $scope.descricao = result.name;
+            $scope.selected_layer = result;
+            $scope.mostrarLayer();
         });
         promise.error(function(result){
             $scope.mensagem = "Erro ao enviar formulário. " ;
@@ -205,8 +203,6 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.ajaxload = true;
         promise.success(function(result){
             $scope.ajaxload = false;
-            console.log(result);
-            console.log("Foi");
             $scope.image = result;
             $scope.imgs.push($scope.image);
             //console.log($scope.image);
