@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="static/css/maps.css">
     <link rel="stylesheet" href="static/css/simple-sidebar.css">
 
-    <script src="http://maps.google.com/maps/api/js?sensor=false&libraries=geometry"></script>
+    <script src="http://maps.google.com/maps/api/js?libraries=geometry"></script>
     <script type="text/javascript" src="static/js/lib/jquery.min.js"></script>
     <script type="text/javascript" src="static/js/lib/angular.min.js"></script>
     <script type="text/javascript" src="static/js/configs/modules.js"></script>
@@ -61,7 +61,7 @@
             <div class="row">
 
 
-                <div ng-show="mapaVisible">
+                <div ng-show="mapaVisible && !ajaxload">
                     <div id="map"></div>
                 </div>
 
@@ -75,18 +75,21 @@
                                 </span>
                             </div>
 
-                            <div>
-                              <carousel interval="myInterval">
-                                <slide ng-repeat="i in imgs" active="i.active">
-                                  <img ng-src="{{i.link}}">
-                                </slide>
-                              </carousel>
+                            <div class="container-fluid">
+
+                                <div ng-repeat="i in imgs" active="i.active" class="file">
+                                    <img ng-src="{{i.link}}">
+                                </div>
+                                <div ng-repeat="v in videos" active="v.active" class="file">
+                                    <video ng-src="{{v.link}}" type="video/mp4" width="100" controls>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div ng-show="formVisible">
+                <div ng-show="formVisible && !ajaxload">
                     <div class="title">Novo Layer</div>
                     <div class="form col-lg-12">
                         <div style="color:red">
@@ -128,7 +131,6 @@
 
             <a href="" class="btn btn-navbar destaque" ng-show="btnAbrir && !btnSair" ng-click="mostrarLayer()"><i class="fa fa-image fa-navbar"></i> {{ descricao }}</a>
             
-
             <a href="" class="btn btn-navbar" ng-show="btnSair" ng-click="mostrarMapa()"><i class="fa fa-reply fa-navbar"></i> SAIR</a>
 
             <a href="" class="btn btn-navbar btnPhoto" ng-show="btnFoto" ng-click="tirarFoto()"><i class="fa fa-camera fa-navbar"></i></a>
