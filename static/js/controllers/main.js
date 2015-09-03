@@ -15,7 +15,6 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     $scope.conteudoLayer = false;
     $scope.formVisible = false;
     $scope.ajaxload = false;
-
     $scope.btnCriar = true;
     $scope.btnCancelar = false;
     $scope.btnAbrir = false;
@@ -41,7 +40,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     }
 
     $scope.mostrarLayer = function() {
-        getImages($scope.selected_layer);
+        getFiles($scope.selected_layer);
         $scope.formVisible = false;
         $scope.mapaVisible = false;
         $scope.conteudoLayer = true;
@@ -79,32 +78,47 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
 
     function listarLayers() {
         var promise = LayerApi.list();
+        $scope.ajaxload = true;
         promise.success(function(result){
             layers = result.layers;
             criarLayers();
+            $scope.ajaxload = false;
         });
         promise.error(function(result){
-            alert("Erro ao buscar layers.")
+            alert("Erro ao buscar layers.");
+            $scope.ajaxload = false;
         });
     }
     
     listarLayers();
 
-    $scope.imgs;
-    var getImages = function(layer){
+    $scope.imgs = new Array();
+    $scope.videos = new Array();
+    var getFiles = function(layer){
         var params = {
-            layerId: layer.id,
-            filters : {
-                file: 'image'
-            }
+            layerId: layer.id
         };
         var promise = FileApi.list(params);
+        $scope.ajaxload = true;
         promise.success(function(result){
-            $scope.imgs = result.files;
+            var files = result.files;
+            for(var i=0; i<files.length; i++){
+                if(files[i].kind == "image"){
+                    $scope.imgs.push(files[i]);
+                }
+                else if(files[i].kind == "video"){
+                    $scope.videos.push(files[i]);
+                }
+                
+            }
+            console.log($scope.imgs);
+            console.log($scope.videos); 
+            $scope.ajaxload = false;
         });
         promise.error(function(result){
-            alert("Erro ao buscar imagens")
-        });      
+            alert("Erro ao buscar imagens");
+            $scope.ajaxload = false;
+        });   
     }
 
     var layerOptions = {
@@ -129,7 +143,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
                 position: layerOptions.center,
                 content: layers[i].name
             });
-        }   
+        }  
     }
 
     function calcDistance(p1, p2){
@@ -151,14 +165,11 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
             userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
             marker.setPosition(userPosition);
             map.setCenter(userPosition);
-            //console.log(userPosition);
 
             for(var i=0; i<layers.length; ++i){
                 layerPosition = new google.maps.LatLng(layers[i].latitude, layers[i].longitude);
                 if(calcDistance(userPosition, layerPosition) < layers[i].radius) {
                     if(inLayer == 0) {
-                        //$interval.cancel(timer); // stop timer
-                        //getImages(layers[i]);
                         $scope.descricao = layers[i].name;
                         $scope.selected_layer = layers[i];
                         $scope.btnAbrir = true;
@@ -185,13 +196,16 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.form["latitude"] = userPosition.G;
         $scope.form["longitude"] = userPosition.K;
         var promise = LayerApi.save($scope.form);
+        $scope.ajaxload = true;
         promise.success(function(result){
             $scope.descricao = result.name;
             $scope.selected_layer = result;
             $scope.mostrarLayer();
+            $scope.ajaxload = false;
         });
         promise.error(function(result){
             $scope.mensagem = "Erro ao enviar formulário. " ;
+            $scope.ajaxload = false;
             console.log(result);
         }); 
     };
@@ -203,8 +217,16 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.ajaxload = true;
         promise.success(function(result){
             $scope.ajaxload = false;
-            $scope.image = result;
-            $scope.imgs.push($scope.image);
+            if(result.kind == "image"){
+                $scope.imgs.push(result);
+                console.log($scope.imgs);
+            }
+            else if(result.kind == "video"){
+                $scope.videos.push(result);
+                console.log($scope.videos);
+            }
+            //$scope.image = result;
+            //$scope.imgs.push($scope.image);
             //console.log($scope.image);
         });
         promise.error(function(result){

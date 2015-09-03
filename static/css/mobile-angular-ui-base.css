@@ -3136,7 +3136,7 @@ pre code {
 }
 
 .container-fluid {
-  
+    margin-bottom: 50px;
 }
 
 .row {
@@ -7737,7 +7737,16 @@ a.list-group-item .icon.pull-right {
   text-overflow: ellipsis;
 }
 
-.navbar-absolute-top,
+.navbar-absolute-top{
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  right: 0;
+  width: 100%;
+  margin: 0;
+  top: 0;
+}
+
 .navbar-absolute-bottom {
   position: fixed;
   z-index: 1000;
@@ -8125,4 +8134,8 @@ ui-switch {
     outline: none;
     cursor: inherit;
     display: block;
+}
+
+.file {
+  margin-bottom: 5px;
 }
