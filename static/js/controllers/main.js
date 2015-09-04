@@ -10,7 +10,6 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         username
     );
 
-
     $scope.mapaVisible = true;
     $scope.conteudoLayer = false;
     $scope.formVisible = false;
@@ -37,6 +36,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.btnCancelar = false;
         $scope.btnSair = false;
         criarLayers();
+        inLayer = 0;
     }
 
     $scope.mostrarLayer = function() {
@@ -46,120 +46,41 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.conteudoLayer = true;
         $scope.btnAbrir = false;
         $scope.btnCancelar = false;
-        $scope.btnSair = true;
-        
+        $scope.btnSair = true; 
     }
 
-    //var userLat = -23.199385; // Santos Dumont Lat
-    //var userLng = -45.891001; // Santos Dumont Lng
-    //var userLat = -23.198069; // Vicentina Aranha 2 Lat
-    //var userLng = -45.896236; // Vicentina Aranha 2 Lng
-    //var userLat = -23.198300; // Vicentina Aranha Lat
-    //var userLng = -45.894200; // Vicentina Aranha Lng
-    //var userLat = -23.160903; // FATEC
-    //var userLng = -45.795815; // FATEC
-    var userPosition = null;
 
-    var mapOptions = {
-        center: userPosition,
-        disableDefaultUI: true,
-        zoom: 18
-    }
-    var map = new google.maps.Map(document.getElementById('map'), mapOptions);
+    var userPosition;
+    var map;
+    var marker;
 
-    var marker = new google.maps.Marker({
-              position: userPosition,
-              map: map
-            });
-
-
-
-    var layers;
-
-    function listarLayers() {
-        var promise = LayerApi.list();
-        $scope.ajaxload = true;
-        promise.success(function(result){
-            layers = result.layers;
-            criarLayers();
-            $scope.ajaxload = false;
+    navigator.geolocation.getCurrentPosition(function(position){
+        userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+        var mapOptions = {
+            center: userPosition,
+            disableDefaultUI: true,
+            zoom: 17
+        }
+        map = new google.maps.Map(document.getElementById('map'), mapOptions);
+        marker = new google.maps.Marker({
+            position: userPosition,
+            map: map
         });
-        promise.error(function(result){
-            alert("Erro ao buscar layers.");
-            $scope.ajaxload = false;
-        });
-    }
-    
-    listarLayers();
 
-    $scope.imgs = new Array();
-    $scope.videos = new Array();
-    var getFiles = function(layer){
-        var params = {
-            layerId: layer.id
-        };
-        var promise = FileApi.list(params);
-        $scope.ajaxload = true;
-        promise.success(function(result){
-            var files = result.files;
-            for(var i=0; i<files.length; i++){
-                if(files[i].kind == "image"){
-                    $scope.imgs.push(files[i]);
-                }
-                else if(files[i].kind == "video"){
-                    $scope.videos.push(files[i]);
-                }
-                
-            }
-            console.log($scope.imgs);
-            console.log($scope.videos); 
-            $scope.ajaxload = false;
-        });
-        promise.error(function(result){
-            alert("Erro ao buscar imagens");
-            $scope.ajaxload = false;
-        });   
-    }
+        getLayers();
 
-    var layerOptions = {
-            strokeColor: '#1000FF',
-            strokeOpacity: 0.8,
-            strokeWeight: 2,
-            fillColor: '#1000FF',
-            fillOpacity: 0.35,
-            map: map,
-            center: null,
-            radius: null
-            }; 
-
-    var criarLayers = function(){
-        for(var i=0; i<layers.length; ++i){
-            layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
-            layerOptions.radius = layers[i].radius;
-            var circle = new google.maps.Circle(layerOptions);
-
-            var infowindowLayer = new google.maps.InfoWindow({
-                map: map,
-                position: layerOptions.center,
-                content: layers[i].name
-            });
-        }  
-    }
+        var timer = $interval(autoUpdate,500);
+    });
 
     function calcDistance(p1, p2){
         return (google.maps.geometry.spherical.computeDistanceBetween(p1, p2)).toFixed(2);
     }
 
-    var timer = $interval(autoUpdate,1000);
-
     var inLayer = 0;
 
     function autoUpdate() {
         
-        navigator.geolocation.getCurrentPosition(
-                displayPosition, 
-                displayError
-            );
+        navigator.geolocation.getCurrentPosition(displayPosition, displayError);
 
         function displayPosition(position) {
             userPosition = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
@@ -182,6 +103,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
                 }
             }
         }
+
         function displayError(error) {
             var errors = { 
                 1: 'Permission denied',
@@ -190,6 +112,48 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
             };
             alert("Error: " + errors[error.code]);
         }
+
+    }
+
+    var layers = new Array();
+
+    function getLayers() {
+        var promise = LayerApi.list();
+        $scope.ajaxload = true;
+        promise.success(function(result){
+            layers = result.layers;
+            criarLayers();
+            $scope.ajaxload = false;
+        });
+        promise.error(function(result){
+            alert("Erro ao buscar layers.");
+            $scope.ajaxload = false;
+        });
+    }
+
+    var criarLayers = function(){
+
+        var layerOptions = {
+            strokeColor: '#1000FF',
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: '#1000FF',
+            fillOpacity: 0.35,
+            map: map,
+            center: null,
+            radius: null
+        }; 
+
+        for(var i=0; i<layers.length; ++i){
+            layerOptions.center = new google.maps.LatLng(layers[i].latitude,layers[i].longitude);
+            layerOptions.radius = layers[i].radius;
+            var circle = new google.maps.Circle(layerOptions);
+            var infowindowLayer = new google.maps.InfoWindow({
+                map: map,
+                position: layerOptions.center,
+                content: layers[i].name
+            });
+        }  
     }
 
     $scope.submitLayer = function() {
@@ -210,24 +174,14 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         }); 
     };
 
-    $scope.image = false;
     $scope.submitFile = function(files){
         var _file = files[0];
         var promise = FileApi.save(_file, $scope.selected_layer.id);
         $scope.ajaxload = true;
         promise.success(function(result){
+            $scope.files.push(result);
             $scope.ajaxload = false;
-            if(result.kind == "image"){
-                $scope.imgs.push(result);
-                console.log($scope.imgs);
-            }
-            else if(result.kind == "video"){
-                $scope.videos.push(result);
-                console.log($scope.videos);
-            }
-            //$scope.image = result;
-            //$scope.imgs.push($scope.image);
-            //console.log($scope.image);
+            console.log($scope.files);
         });
         promise.error(function(result){
             $scope.ajaxload = false;
@@ -235,5 +189,36 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         });
     };
 
+    $scope.files = new Array();
+
+    var getFiles = function(layer){
+        var params = {
+            layerId: layer.id,
+            filters: {
+                files: 'all',
+                deleted: false
+            }
+        };
+        var promise = FileApi.list(params);
+        $scope.ajaxload = true;
+        promise.success(function(result){
+            $scope.files = result.files;
+            $scope.ajaxload = false;
+        });
+        promise.error(function(result){
+            alert("Erro ao buscar imagens");
+            $scope.ajaxload = false;
+        });   
+    }
 
 });
+
+
+//var userLat = -23.199385; // Santos Dumont Lat
+    //var userLng = -45.891001; // Santos Dumont Lng
+    //var userLat = -23.198069; // Vicentina Aranha 2 Lat
+    //var userLng = -45.896236; // Vicentina Aranha 2 Lng
+    //var userLat = -23.198300; // Vicentina Aranha Lat
+    //var userLng = -45.894200; // Vicentina Aranha Lng
+    //var userLat = -23.160903; // FATEC
+    //var userLng = -45.795815; // FATEC
