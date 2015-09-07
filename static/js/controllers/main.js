@@ -69,7 +69,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
 
         getLayers();
 
-        var timer = $interval(autoUpdate,500);
+        var timer = $interval(autoUpdate,3000);
     });
 
     function calcDistance(p1, p2){
