@@ -69,7 +69,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
 
         getLayers();
 
-        var timer = $interval(autoUpdate,3000);
+        var timer = $interval(autoUpdate,1000);
     });
 
     function calcDistance(p1, p2){
@@ -174,24 +174,12 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         }); 
     };
 
-    $scope.submitFile = function(files){
-        var _file = files[0];
-        var promise = FileApi.save(_file, $scope.selected_layer.id);
-        $scope.ajaxload = true;
-        promise.success(function(result){
-            $scope.files.push(result);
-            $scope.ajaxload = false;
-            console.log($scope.files);
-        });
-        promise.error(function(result){
-            $scope.ajaxload = false;
-            console.log(result);
-        });
-    };
-
-    $scope.files = new Array();
+    $scope.imgs = [];
+    $scope.videos = [];
 
     var getFiles = function(layer){
+        $scope.imgs = [];
+        $scope.videos = [];
         var params = {
             layerId: layer.id,
             filters: {
@@ -202,14 +190,49 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         var promise = FileApi.list(params);
         $scope.ajaxload = true;
         promise.success(function(result){
-            $scope.files = result.files;
-            $scope.ajaxload = false;
+            var files = result.files;
+            for(var i=0; i<files.length; i++){
+                if(files[i].kind == "image"){
+                    $scope.imgs.push(files[i]);
+                }
+                else if(files[i].kind == "video"){
+                    var video = {
+                        "src":files[i].link,
+                    }
+                    $scope.videos.push(files[i]);
+                }
+            }
+            console.log($scope.imgs);
+            console.log($scope.videos); 
+            $scope.ajaxload = false; 
         });
         promise.error(function(result){
             alert("Erro ao buscar imagens");
             $scope.ajaxload = false;
-        });   
+        });  
+
     }
+
+    $scope.submitFile = function(files){
+        var _file = files[0];
+        var promise = FileApi.save(_file, $scope.selected_layer.id);
+        $scope.ajaxload = true;
+        promise.success(function(result){
+            if(result.kind == "image"){
+                $scope.imgs.push(result);
+                console.log($scope.imgs);
+            }
+            else if(result.kind == "video"){
+                $scope.videos.push(result);
+                console.log($scope.videos);
+            }
+            $scope.ajaxload = false;
+        });
+        promise.error(function(result){
+            $scope.ajaxload = false;
+            console.log(result);
+        });
+    };
 
 });
 

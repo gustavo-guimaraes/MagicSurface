@@ -8139,3 +8139,10 @@ ui-switch {
 .file {
   margin-bottom: 5px;
 }
+
+.player video {
+    max-width: 100%;
+    max-height: 400px;
+    display: block;
+    margin-bottom: 5px;
+}
