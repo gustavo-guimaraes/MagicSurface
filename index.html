@@ -22,6 +22,7 @@
     <script type="text/javascript" src="static/js/lib/ui-bootstrap-tpls.js"></script>
     <script type="text/javascript" src="static/js/services/magicSurface.min.js"></script>
     <script type="text/javascript" src="static/js/controllers/main.js"></script>
+    <script type="text/javascript" src="static/js/controllers/video.js"></script>
 
 </head>
 
@@ -71,22 +72,18 @@
                         <div ng-hide="ajaxload">
                             <div class="form-group has-success has-feedback text-center">
                                 <span class="btn btn-primary btn-file">
-                                    Adicionar Foto / Vídeo ... <input type="file" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
+                                    Adicionar Foto / Vídeo ... <input type="file" accept="image/*;capture=camera" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
                                 </span>
                             </div>
 
                             <div class="container-fluid">
 
-                                <div ng-repeat="file in files" class="file">
-                                    <div ng-show="file.kind == 'video'">
-                                        <video width="100%" controls>
-                                            <source ng-src="{{file.link}}" type="video/mp4">
-                                        </video>        
-                                    </div>
-                                    <div ng-hide="file.kind == 'video'">
-                                        <img ng-src="{{file.link}}" />
-                                    </div>                
+                                <div ng-repeat="i in imgs" active="i.active" class="file">
+                                    <img ng-src="{{i.link}}">
                                 </div>
+
+                                <player ng-repeat="video in videos" video='video' />
+  
 
                             </div>
                         </div>
