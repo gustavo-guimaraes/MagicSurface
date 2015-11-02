@@ -79,7 +79,9 @@
                             <div class="container-fluid">
 
                                 <div ng-repeat="i in imgs" active="i.active" class="file text-center">
-                                    <button class="btn btn-default" ng-click="mostrarCamera(i)">Visualizar em modo Realidade Aumentada</button>
+                                    <div class="form-group">
+                                        <button class="btn btn-default" ng-click="mostrarCamera(i)">Visualizar em modo Realidade Aumentada</button>
+                                    </div>
                                     <img ng-src="{{i.link}}">
                                 </div>
 

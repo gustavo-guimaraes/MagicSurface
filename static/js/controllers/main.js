@@ -23,6 +23,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     $scope.mostrarForm = function() {
         $scope.mapaVisible = false;
         $scope.formVisible = true;
+        $scope.raVisible = false;
         $scope.btnCriar = false;
         $scope.btnCancelar = true;
         $scope.latitude = userPosition.lat();
@@ -33,6 +34,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.mapaVisible = true;
         $scope.formVisible = false;
         $scope.conteudoLayer = false;
+        $scope.raVisible = false;
         $scope.btnCriar = true;
         $scope.btnCancelar = false;
         $scope.btnSair = false;
@@ -44,6 +46,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         getFiles($scope.selected_layer);
         $scope.formVisible = false;
         $scope.mapaVisible = false;
+        $scope.raVisible = false;
         $scope.conteudoLayer = true;
         $scope.btnAbrir = false;
         $scope.btnCancelar = false;
@@ -265,11 +268,10 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
 
         var c=document.getElementById("myCanvas");
         var ctx=c.getContext("2d");
-        ctx.globalAlpha = 0.4;
         var img = new Image();
         img.src = image.link;
         img.onload = function () {
-            img.globalAlpha = 0.4;
+            ctx.globalAlpha = 0.1;
             ctx.drawImage(img, 70, 50, 350, 480);
             ctx.clearRect(0, 0, c.width, c.height);
             var alpha=0, beta=0, gamma=0;
