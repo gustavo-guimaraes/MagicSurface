@@ -13,6 +13,7 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     $scope.mapaVisible = true;
     $scope.conteudoLayer = false;
     $scope.formVisible = false;
+    $scope.raVisible = false;
     $scope.ajaxload = false;
     $scope.btnCriar = true;
     $scope.btnCancelar = false;
@@ -24,8 +25,8 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         $scope.formVisible = true;
         $scope.btnCriar = false;
         $scope.btnCancelar = true;
-        $scope.latitude = userPosition.G;
-        $scope.longitude = userPosition.K;
+        $scope.latitude = userPosition.lat();
+        $scope.longitude = userPosition.lng();
     }
 
     $scope.mostrarMapa = function() {
@@ -157,8 +158,8 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
     }
 
     $scope.submitLayer = function() {
-        $scope.form["latitude"] = userPosition.G;
-        $scope.form["longitude"] = userPosition.K;
+        $scope.form["latitude"] = userPosition.lat();
+        $scope.form["longitude"] = userPosition.lng();
         var promise = LayerApi.save($scope.form);
         $scope.ajaxload = true;
         promise.success(function(result){
@@ -196,9 +197,6 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
                     $scope.imgs.push(files[i]);
                 }
                 else if(files[i].kind == "video"){
-                    var video = {
-                        "src":files[i].link,
-                    }
                     $scope.videos.push(files[i]);
                 }
             }
@@ -213,9 +211,24 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
 
     }
 
+    var x=0, y=0, z=0;
+
+    window.addEventListener('deviceorientation', function(event) {
+        x = event.alpha.toFixed(0);
+        y = event.beta.toFixed(0);
+        z = event.gamma.toFixed(0);
+    });
+
     $scope.submitFile = function(files){
+
+        var params = {
+            layerId: $scope.selected_layer.id,
+            angle_x: x,
+            angle_y: y,
+            angle_z: z
+        }
         var _file = files[0];
-        var promise = FileApi.save(_file, $scope.selected_layer.id);
+        var promise = FileApi.save(_file, params);
         $scope.ajaxload = true;
         promise.success(function(result){
             if(result.kind == "image"){
@@ -234,14 +247,87 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
         });
     };
 
+
+    // FUNÇÕES PARA REALIDADE AUMENTADA
+
+    function verifyOrientation(a, b, g, x, y, z) {
+        if(a > (x-15) && a < (x+15) && b > (y-15) && b < (y+15) && g > (z-15) && g < (z+15)) {
+            return true;
+        }
+        return false;
+    }
+
+    $scope.mostrarCamera = function(image) {
+        $scope.raVisible = true
+        $scope.mapaVisible = false;
+        $scope.formVisible = false;
+        $scope.conteudoLayer = false;
+
+        var c=document.getElementById("myCanvas");
+        var ctx=c.getContext("2d");
+        ctx.globalAlpha = 0.4;
+        var img = new Image();
+        img.src = image.link;
+        img.onload = function () {
+            img.globalAlpha = 0.4;
+            ctx.drawImage(img, 70, 50, 350, 480);
+            ctx.clearRect(0, 0, c.width, c.height);
+            var alpha=0, beta=0, gamma=0;
+
+            window.addEventListener('deviceorientation', function(event) {
+                alpha = event.alpha.toFixed(0);
+                beta = event.beta.toFixed(0);
+                gamma = event.gamma.toFixed(0);
+                if(verifyOrientation(alpha, beta, gamma, image.angle_x, image.angle_y, image.angle_z)) {
+                    ctx.drawImage(img, 70, 50, 200, 300);
+                }
+                else {
+                    ctx.clearRect(0, 0, c.width, c.height);
+                }                        
+            });
+        }
+    }
+
+    if (typeof MediaStreamTrack === 'undefined' || typeof MediaStreamTrack.getSources === 'undefined') {
+        alert('This browser does not support MediaStreamTrack.\n\nTry Chrome.');
+    } else {
+        MediaStreamTrack.getSources(gotSources);
+    }
+
+    var constraints = {};
+
+    function gotSources(sourceInfos) {
+        for (var i = 0; i !== sourceInfos.length; ++i) {
+            var sourceInfo = sourceInfos[i];
+            var option = document.createElement('option');
+            option.value = sourceInfo.id;
+            if (sourceInfo.kind === 'video') {
+                sourceInfo = sourceInfos[i+1];
+                constraints.video = {
+                    optional: [{ sourceId: sourceInfo.id.toString() }]
+                };
+
+                navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia ||navigator.mozGetUserMedia;
+                if (navigator.getUserMedia) {
+                    navigator.getUserMedia(constraints, 
+                        function(stream) {
+                            var video = document.getElementById('sourcevid');
+                            video.src = window.URL.createObjectURL(stream);
+                            video.onloadedmetadata = function(e) {
+                                video.play();
+                            };
+                        }, 
+                        function(err) {
+                            alert("The following error occured: " + err.name);
+                        }
+                    );
+                } else {
+                    alert("getUserMedia not supported");
+                }
+
+                video = document.getElementById('sourcevid');
+            }
+        }
+     }
+
 });
-
-
-//var userLat = -23.199385; // Santos Dumont Lat
-    //var userLng = -45.891001; // Santos Dumont Lng
-    //var userLat = -23.198069; // Vicentina Aranha 2 Lat
-    //var userLng = -45.896236; // Vicentina Aranha 2 Lng
-    //var userLat = -23.198300; // Vicentina Aranha Lat
-    //var userLng = -45.894200; // Vicentina Aranha Lng
-    //var userLat = -23.160903; // FATEC
-    //var userLng = -45.795815; // FATEC

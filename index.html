@@ -72,13 +72,14 @@
                         <div ng-hide="ajaxload">
                             <div class="form-group has-success has-feedback text-center">
                                 <span class="btn btn-primary btn-file">
-                                    Adicionar Foto / Vídeo ... <input type="file" accept="image/*;capture=camera" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
+                                    Adicionar Foto / Vídeo ... <input type="file" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
                                 </span>
                             </div>
 
                             <div class="container-fluid">
 
-                                <div ng-repeat="i in imgs" active="i.active" class="file">
+                                <div ng-repeat="i in imgs" active="i.active" class="file text-center">
+                                    <button class="btn btn-default" ng-click="mostrarCamera(i)">Visualizar em modo Realidade Aumentada</button>
                                     <img ng-src="{{i.link}}">
                                 </div>
 
@@ -110,6 +111,18 @@
                           <button type="submit" ng-click="submitLayer()" class="btn btn-primary btn-block">Criar</button>
                         </div>
                     </div> 
+                </div>
+
+                <div ng-show="raVisible && !ajaxload">
+                    <canvas id="myCanvas" width="350" height="480" style="border:1px solid #d3d3d3; position:absolute; z-index:10;">
+                        Your browser does not support the HTML5 canvas tag.
+                    </canvas>
+
+                    <div style="position:absolute;">
+                        <video id="sourcevid" autoplay width="350">
+                            Sorry, you're browser doesn't support video. Please try 
+                        </video>
+                    </div>
                 </div>
 
                 <div ng-show="ajaxload" class="ajaxload">
