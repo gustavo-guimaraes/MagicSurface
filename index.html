@@ -72,7 +72,7 @@
                         <div ng-hide="ajaxload">
                             <div class="form-group has-success has-feedback text-center">
                                 <span class="btn btn-primary btn-file">
-                                    Adicionar Foto / Vídeo ... <input type="file" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
+                                    Adicionar Foto / Vídeo ... <input type="file" accept="image/*;capture=camera" name="file" ng-model="file" onchange="angular.element(this).scope().submitFile(this.files)"/>
                                 </span>
                             </div>
 

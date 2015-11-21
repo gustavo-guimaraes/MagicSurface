@@ -203,8 +203,6 @@ angular.module('MagicApp').controller('MainCtrl', function($scope, $interval, Ma
                     $scope.videos.push(files[i]);
                 }
             }
-            console.log($scope.imgs);
-            console.log($scope.videos); 
             $scope.ajaxload = false; 
         });
         promise.error(function(result){
